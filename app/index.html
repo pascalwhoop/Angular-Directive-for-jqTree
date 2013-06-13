@@ -1,0 +1,33 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Tree Directive Sample</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="components/jqTree/jqtree.css"/>
+
+    <script src="components/angular/angular.js"></script>
+    <script src="components/jquery/jquery.js"></script>
+    <script src="components/jqTree/tree.jquery.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/directives/ngTree.js"></script>
+</head>
+<body ng-app="treeDirectiveApp">
+
+<div ng-controller="MainCtrl">
+    <button ng-click="switchData()">Switch data to see if tree updates on new scope data</button>
+    <button ng-click="logTree()">Log tree in controller Scope</button>
+
+    <h3>Tree 1</h3>
+    <ng-tree tree-data="treeData" tree-expanded="true" node-selected="nodeSelected(node)"
+             node-moved="nodeMoved(move)"></ng-tree>
+
+    <h3>Tree 2</h3>
+    <ng-tree tree-data="differentTreeData" tree-expanded="false"></ng-tree>
+
+
+</div>
+</body>
+</html>
