@@ -3,6 +3,7 @@
 Take a look at this first if you haven't done so yet: [jqTree Official Github Page](http://mbraak.github.io/jqTree/index.html)
 
 This directive is supposed to make a jqTree compatible with AngularJS.
+I don't take any credit for jqTree. This has been done by s.o. else and he/she should get the credit. Also I don't have any licensing plans. So just make sure you follow the rules of the license that applies to jqTree.
 
 ###What I've done:
 
