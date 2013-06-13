@@ -16,6 +16,7 @@ angular.module('ngTreeDirective', [])
                 var tree = $element.children()[0];
                 tree = $(tree);
 
+
                 //when data has changed, the digest cycle will call this watch function. This in turn will
                 //replace the current tree with a new one holding the updated values.
                 $scope.$watch('treeData', function (newValue, oldValue) {
@@ -42,28 +43,43 @@ angular.module('ngTreeDirective', [])
                     }
                 }
 
-                var isDragAndDropEnabled = function(){
-                    if($attrs.nodeMoved){
+                var isDragAndDropEnabled = function () {
+                    if ($attrs.nodeMoved) {
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
                 }
 
                 $scope.initTree = function () {
-                    $(function () {
-                            tree.tree({
-                                    data: $scope.treeData,
-                                    autoOpen: $scope.treeExpanded,
-                                    dragAndDrop: isDragAndDropEnabled(),
-                                    selectable: isSelectable(),
-                                    slide: true
-                                }
+
+                    //check if input data is object. if yes wrap object in array. thats the least we can do
+
+                    //Since the data is two way bound to the calling controller, we shouldn't replace the object itself but rather
+                    //wrap it in an array and pass the reference to the array to our jqTree init. otherwise we would replace
+                    //the object with an array containing the object and this would also affect the calling scope.
+                    var dataForJQTree;
+                    if (!(Object.prototype.toString.call($scope.treeData) === '[object Array]')){
+                        var array = [];
+                        array.push($scope.treeData);
+                        dataForJQTree = array;
+                    }else{
+                        dataForJQTree = $scope.treeData;
+                    }
+
+                        $(function () {
+                                tree.tree({
+                                        data: dataForJQTree ,
+                                        autoOpen: $scope.treeExpanded,
+                                        dragAndDrop: isDragAndDropEnabled(),
+                                        selectable: isSelectable(),
+                                        slide: true
+                                    }
 
 
-                            )
-                        }
-                    );
+                                )
+                            }
+                        );
                 }
 
                 $scope.initTree();
