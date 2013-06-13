@@ -1,4 +1,4 @@
-app
+angular.module('ngTreeDirective', [])
     .directive('ngTree', function () {
         return {
             template: '<div></div>',
