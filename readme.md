@@ -50,6 +50,7 @@ The Data passed to the <code>tree-data</code> attribute should look like this:
 ]
 ```
 The objects should either have an attribute of  <code>label</code> or <code>name</code>. <code>name</code> is the recommended way, since this is what will be returned by the callback functions.
+<strong>All elements (nodes) MUST have an ID</strong> for the select callback to work. Otherwise the select callback will be passed an internal copy of the selected node and not the reference to the node which is within the angular "world" (your controllers's scope).
 
 #####Tree-Expanded attribute
 This attribute takes <code>true</code>, <code>false</code> or  <code>n</code> while n ∈ ℕ and indicates the number of levels to expand on initialization

@@ -59,39 +59,47 @@ angular.module('ngTreeDirective', [])
                     //Since the data is two way bound to the calling controller, we shouldn't replace the object itself but rather
                     //wrap it in an array and pass the reference to the array to our jqTree init. otherwise we would replace
                     //the object with an array containing the object and this would also affect the calling scope.
-                    var dataForJQTree;
-                    if (!(Object.prototype.toString.call($scope.treeData) === '[object Array]')){
-                        var array = [];
-                        array.push($scope.treeData);
-                        dataForJQTree = array;
-                    }else{
-                        dataForJQTree = $scope.treeData;
+
+
+                    var dataForJQTree = $scope.wrapObjectInArrayOrReturnIfArray($scope.treeData);
+
+
+                    $(function () {
+                            tree.tree({
+                                    data: dataForJQTree,
+                                    autoOpen: $scope.treeExpanded,
+                                    dragAndDrop: isDragAndDropEnabled(),
+                                    selectable: isSelectable(),
+                                    slide: true
+                                }
+
+
+                            )
+                        }
+                    );
+                }
+
+                $scope.wrapObjectInArrayOrReturnIfArray = function(object){
+                    if (Object.prototype.toString.call(object) === '[object Array]') {
+                        return object; //this object is an array already
+
                     }
 
-                        $(function () {
-                                tree.tree({
-                                        data: dataForJQTree ,
-                                        autoOpen: $scope.treeExpanded,
-                                        dragAndDrop: isDragAndDropEnabled(),
-                                        selectable: isSelectable(),
-                                        slide: true
-                                    }
-
-
-                                )
-                            }
-                        );
+                    var array = [];
+                    array.push(object);
+                    return array;
                 }
 
                 $scope.initTree();
 
-                $scope.bindTreeEvents = function(){
+                $scope.bindTreeEvents = function () {
                     tree.bind(
                         'tree.select',
                         function (event) {
-                            if (event.node) {
-                                // node was selected
-                                $scope.nodeSelected({node: event.node});
+                            if (event.node) {   // node was selected
+
+                                var array = $scope.wrapObjectInArrayOrReturnIfArray($scope.treeData);
+                                $scope.returnAngularBoundNodeOrInternalNode(event, array);
                             }
                             else {
                                 // event.node is null
@@ -116,6 +124,39 @@ angular.module('ngTreeDirective', [])
                 }
 
 
+                //util function to search a tree for its containing node with said id
+                $scope.findNodeInTreeByID = function (id, node) {
+                    if (node.id == id) {
+                        return node;
+                    }
+                    for (var i = 0; i < node.children.length; i++) {
+                        var returnValue = $scope.findNodeInTreeByID(id, node.children[i]);
+                        if (returnValue) {
+                            return returnValue;
+                        }
+                    }
+
+                }
+
+                $scope.returnAngularBoundNodeOrInternalNode = function (event, angTreeData) {
+                    //If the nodes do not contain ID's we return the internal node (original one from the event)
+                    if (!event.node.id) {
+                        $scope.$apply(function () {
+                            $scope.nodeSelected({
+                                node: event.node
+                            });
+                        });
+                    }else{
+                        //find returned node in our two way data bound angular variable and return that one
+                        var root = angTreeData[0];
+
+                        $scope.$apply(function () {
+                            $scope.nodeSelected({
+                                node: $scope.findNodeInTreeByID(event.node.id, root)
+                            });
+                        });
+                    }
+                }
 
 
             },
