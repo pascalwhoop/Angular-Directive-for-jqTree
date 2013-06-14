@@ -32,6 +32,7 @@ angular.module('ngTreeDirective', [])
                         tree = newDiv;
 
                         $scope.initTree();
+                        $scope.bindTreeEvents();
                     }
                 })
 
@@ -84,34 +85,37 @@ angular.module('ngTreeDirective', [])
 
                 $scope.initTree();
 
-
-                tree.bind(
-                    'tree.select',
-                    function (event) {
-                        if (event.node) {
-                            // node was selected
-                            $scope.nodeSelected({node: event.node});
+                $scope.bindTreeEvents = function(){
+                    tree.bind(
+                        'tree.select',
+                        function (event) {
+                            if (event.node) {
+                                // node was selected
+                                $scope.nodeSelected({node: event.node});
+                            }
+                            else {
+                                // event.node is null
+                                // a node was deselected
+                            }
                         }
-                        else {
-                            // event.node is null
-                            // a node was deselected
-                        }
-                    }
-                );
+                    );
 
-                tree.bind(
-                    'tree.move',
-                    function (event) {
-                        var move = {
-                            movedNode: event.move_info.moved_node,
-                            targetNode: event.move_info.target_node,
-                            targetPosition: event.move_info.position,
-                            previousParent: event.move_info.previous_parent
-                        }
-                        $scope.nodeMoved({move: move});
+                    tree.bind(
+                        'tree.move',
+                        function (event) {
+                            var move = {
+                                movedNode: event.move_info.moved_node,
+                                targetNode: event.move_info.target_node,
+                                targetPosition: event.move_info.position,
+                                previousParent: event.move_info.previous_parent
+                            }
+                            $scope.nodeMoved({move: move});
 
-                    }
-                );
+                        }
+                    );
+                }
+
+
 
 
             },
