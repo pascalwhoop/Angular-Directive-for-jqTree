@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module("treeDirectiveApp", [])
+var app = angular.module("treeDirectiveApp", ['ngTreeDirective'])
 
 
     app.controller('MainCtrl', function ($scope) {
