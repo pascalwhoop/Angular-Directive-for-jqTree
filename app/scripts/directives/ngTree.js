@@ -5,6 +5,7 @@ angular.module('ngTreeDirective', [])
 
             scope: {
                 treeData: '=',
+                treeOptions: '=',
                 nodeSelected: '&',
                 nodeMoved: '&',
                 treeExpanded: '='
@@ -62,18 +63,24 @@ angular.module('ngTreeDirective', [])
 
 
                     var dataForJQTree = $scope.wrapObjectInArrayOrReturnIfArray($scope.treeData);
-
-
-                    $(function () {
-                            tree.tree({
+                    var options = {
                                     data: dataForJQTree,
                                     autoOpen: $scope.treeExpanded,
                                     dragAndDrop: isDragAndDropEnabled(),
                                     selectable: isSelectable(),
                                     slide: true
                                 }
+                    // apply passed options
+                    if ($scope.treeOptions) {
+                        for (var key in $scope.treeOptions) {
+                            options[key] = $scope.treeOptions[key];
+                        }
+                    }
 
 
+                    $(function () {
+                            tree.tree(
+                                options
                             )
                         }
                     );

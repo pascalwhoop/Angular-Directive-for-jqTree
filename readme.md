@@ -13,8 +13,8 @@ I took the jqTree and wrapped it in a directive. When the data in the scope chan
 ###What you get
 
 ```
-<ng-tree tree-data="treeData" tree-expanded="treeExpanded" node-selected="nodeSelected(node)"
-         node-moved="nodeMoved(move)">         </ng-tree>
+<ng-tree tree-data="treeData" tree-expanded="treeExpanded" tree-options="treeOptions"
+          node-selected="nodeSelected(node)" node-moved="nodeMoved(move)">         </ng-tree>
 ```
 A new Element called <code>ng-tree</code> which will create a tree representation of the data passed to it via the <code>tree-data</code> attribute. 
 
@@ -55,8 +55,12 @@ The objects should either have an attribute of  <code>label</code> or <code>name
 #####Tree-Expanded attribute
 This attribute takes <code>true</code>, <code>false</code> or  <code>n</code> while n ∈ ℕ and indicates the number of levels to expand on initialization
 
+#####Tree-Options attribute
+This attribute takes a dictionary of options that will be passed to jQtree (e.g., onCreateLi, saveState, closedIcon,
+openedIcon, ...). List of options is on [jqTree Official Github Page](http://mbraak.github.io/jqTree/#tree-options)
+
 #####node-selected attribute
-A callback function that takes the argument <code>node</code>. The argument is a reference to the node that was selected. If this attribute is missing, the tree elements will not be selectable
+A callback function that takes the argument <code>node</code>. The argument is a reference to the node that was selected. If this attribute is missing, the tree elements will not be selectable 
 
 #####node-moved attribute
 A callback function that takes the argument <code>move</code>, which contains information about the move. the info is:
