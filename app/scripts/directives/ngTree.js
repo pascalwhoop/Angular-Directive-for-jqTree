@@ -5,6 +5,7 @@ angular.module('ngTreeDirective', [])
 
             scope: {
                 treeData: '=',
+                treeOptions: '=',
                 nodeSelected: '&',
                 nodeMoved: '&',
                 treeExpanded: '='
@@ -16,11 +17,12 @@ angular.module('ngTreeDirective', [])
                 var tree = $element.children()[0];
                 tree = $(tree);
 
-
+                var initialization = true; // before first watch digest
                 //when data has changed, the digest cycle will call this watch function. This in turn will
                 //replace the current tree with a new one holding the updated values.
                 $scope.$watch('treeData', function (newValue, oldValue) {
-                    if (newValue !== oldValue) {  //ignore initialization of watcher
+                    //ignore initialization of watcher if newValue is empty array
+                    if ((newValue !== oldValue) || (initialization && angular.isArray(oldValue) && oldValue.length)) {
 
                         /**
                          * it should be recognized that this updates the entire tree. Large trees may be a performance issue.
@@ -34,6 +36,7 @@ angular.module('ngTreeDirective', [])
                         $scope.initTree();
                         $scope.bindTreeEvents();
                     }
+                    initialization = false;
                 })
 
                 var isSelectable = function () {
@@ -62,18 +65,24 @@ angular.module('ngTreeDirective', [])
 
 
                     var dataForJQTree = $scope.wrapObjectInArrayOrReturnIfArray($scope.treeData);
-
-
-                    $(function () {
-                            tree.tree({
+                    var options = {
                                     data: dataForJQTree,
                                     autoOpen: $scope.treeExpanded,
                                     dragAndDrop: isDragAndDropEnabled(),
                                     selectable: isSelectable(),
                                     slide: true
                                 }
+                    // apply passed options
+                    if ($scope.treeOptions) {
+                        for (var key in $scope.treeOptions) {
+                            options[key] = $scope.treeOptions[key];
+                        }
+                    }
 
 
+                    $(function () {
+                            tree.tree(
+                                options
                             )
                         }
                     );
